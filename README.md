@@ -237,11 +237,26 @@ http://localhost:3000
 
 # 🔐 Environment Variables
 
+Copy `.env.example` to `.env.local` and fill in the values. The project validates environment variables at build time and will fail the build when required values are missing or malformed.
+
+Minimum required values (see `.env.example`):
+
+- `NEXT_PUBLIC_SOROBAN_RPC_URL`
+- `NEXT_PUBLIC_SOROBAN_NETWORK_PASSPHRASE`
+- `NEXT_PUBLIC_STELLAR_HORIZON_URL`
+- `NEXT_PUBLIC_PROOFSTELL_CONTRACT_ID`
+
+Optional but useful:
+
+- `NEXT_PUBLIC_ISSUER_CONTRACT_ID`
+- `NEXT_PUBLIC_WALLET_PROVIDERS` (comma-separated providers like `freighter,xbull`)
+- `NEXT_PUBLIC_API_BASE_URL`
+- `NEXT_PUBLIC_API_KEY`
+
+Example:
+
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
-NEXT_PUBLIC_SOROBAN_RPC=https://soroban-testnet.stellar.org
-NEXT_PUBLIC_STELLAR_NETWORK=testnet
-NEXT_PUBLIC_WALLET_CONNECT=true
+# copy .env.example -> .env.local and edit
 ```
 
 ---
