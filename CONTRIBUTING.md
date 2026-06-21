@@ -177,6 +177,58 @@ Security is critical in a blockchain-based game:
 
 ---
 
+# 🛡️ API Middleware & Error Codes
+
+All Next.js API routes **must** be wrapped with the `withErrorHandling` middleware located in `src/lib/api/errorHandler.ts`.
+
+## Response Envelope
+
+Every API response follows this typed envelope:
+
+```ts
+// success
+{ success: true;  data: T }
+
+// failure
+{ success: false; error: { code: string; message: string } }
+```
+
+## Standard Error Codes
+
+| Code | HTTP Status | Meaning |
+|---|---|---|
+| `INTERNAL_ERROR` | 500 | Unhandled exception inside the handler |
+| `VALIDATION_ERROR` | 422 | Zod schema parse failure (body or query) |
+| `METHOD_NOT_ALLOWED` | 405 | HTTP verb not accepted by this route |
+| `NOT_FOUND` | 404 | Requested resource does not exist |
+
+## Writing a New API Route
+
+```ts
+import { z } from "zod";
+import { methodNotAllowed, withErrorHandling } from "@/lib/api/errorHandler";
+import type { ApiResponse } from "@/lib/api/types";
+
+const bodySchema = z.object({ id: z.string().uuid() });
+
+async function handler(req, res: NextApiResponse<ApiResponse<YourType>>) {
+  if (req.method !== "POST") return methodNotAllowed(res, ["POST"]);
+
+  const { id } = bodySchema.parse(req.body); // throws ZodError → caught automatically
+
+  return res.status(200).json({ success: true, data: { id } });
+}
+
+export default withErrorHandling(handler);
+```
+
+## Logging
+
+Requests and errors are logged to stdout as structured JSON by `src/lib/api/logger.ts`.  
+Replace the `console.*` calls with a structured logger (e.g. pino) when moving to production.
+
+---
+
 # 🤝 Join the Community
 
 **Proof-Stell is more than a game — it's a decentralized gaming experiment.**
