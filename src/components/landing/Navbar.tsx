@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useEventListener } from "../../hooks/useEventListener";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
@@ -20,27 +21,24 @@ export function Navbar({ onLoginClick }: NavbarProps) {
   const [activeSection, setActiveSection] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+  const handleScroll = useCallback(() => {
+    setScrolled(window.scrollY > 20);
 
-      const sections = ["verify", "credentials", "issuers", "how-it-works"];
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 90 && rect.bottom >= 90) {
-            setActiveSection(id);
-            return;
-          }
+    const sections = ["verify", "credentials", "issuers", "how-it-works"];
+    for (const id of sections) {
+      const el = document.getElementById(id);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 90 && rect.bottom >= 90) {
+          setActiveSection(id);
+          return;
         }
       }
-      setActiveSection("");
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    }
+    setActiveSection("");
   }, []);
+
+  useEventListener("scroll", handleScroll);
 
   return (
     <>

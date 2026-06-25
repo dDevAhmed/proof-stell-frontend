@@ -23,13 +23,19 @@ export const HeroSection = ({ onSignUp }: HeroSectionProps) => {
       setActiveStep((prev) => {
         if (prev === VerificationSteps.length - 1) {
           setVerified(true);
-          clearInterval(intervalRef.current!);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
           return prev;
         }
         return prev + 1;
       });
     }, 900);
-    return () => clearInterval(intervalRef.current!);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, []);
 
   return (
